@@ -33,6 +33,9 @@ namespace ProjetoMidasAPI.Migrations
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Descricao")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -53,6 +56,9 @@ namespace ProjetoMidasAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProjecao"));
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DataReferencia")
                         .HasColumnType("datetime2");
