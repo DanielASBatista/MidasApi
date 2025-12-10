@@ -27,7 +27,7 @@ namespace ProjetoMidasAPI.Controllers
         }
 
         // CREATE
-        [HttpPost]
+        [HttpPost("New")]
         public async Task<ActionResult<Projecao>> Post(Projecao projecao)
         {
             projecao.DataCriacao = DateTime.UtcNow; // Define data/hora atual
