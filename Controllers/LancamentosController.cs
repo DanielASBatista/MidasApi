@@ -28,7 +28,7 @@ namespace ProjetoMidasAPI.Controllers
         }
 
         // CREATE - Adiciona novo lançamento
-        [HttpPost]
+        [HttpPost("New")]
         public async Task<ActionResult<Lancamento>> Post(Lancamento lancamento)
         {
             lancamento.DataCriacao = DateTime.UtcNow; // Define data/hora atual
