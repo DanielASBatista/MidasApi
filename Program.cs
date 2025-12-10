@@ -3,9 +3,11 @@ using ProjetoMidasAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Escolha a conexão: ConexaoCasa ou ConexaoLocal
+
+
+// connection string do Azure (configurada no portal do Azure)
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoCasa")));
+  options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoAzure")));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

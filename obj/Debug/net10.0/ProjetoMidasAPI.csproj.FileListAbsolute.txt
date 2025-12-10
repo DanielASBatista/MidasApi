@@ -158,3 +158,4 @@ C:\Users\andre\OneDrive\Pessoal\Faculdade - Contábeis\Ds GERAL\DS\ProjetoMidasA
 C:\Users\andre\OneDrive\Pessoal\Faculdade - Contábeis\Ds GERAL\DS\ProjetoMidasAPI_Final\ProjetoMidasAPI_Final\obj\Debug\net10.0\ProjetoMidasAPI.pdb
 C:\Users\andre\OneDrive\Pessoal\Faculdade - Contábeis\Ds GERAL\DS\ProjetoMidasAPI_Final\ProjetoMidasAPI_Final\obj\Debug\net10.0\ProjetoMidasAPI.genruntimeconfig.cache
 C:\Users\andre\OneDrive\Pessoal\Faculdade - Contábeis\Ds GERAL\DS\ProjetoMidasAPI_Final\ProjetoMidasAPI_Final\obj\Debug\net10.0\ref\ProjetoMidasAPI.dll
+C:\Users\andre\OneDrive\Pessoal\Faculdade - Contábeis\Ds GERAL\DS\ProjetoMidasAPI_Final\ProjetoMidasAPI_Final\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

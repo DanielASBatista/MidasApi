@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProjetoMidasAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d9bf1c0e684455f8c16c772428ac37c0fdf5d311")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9077fd6cf10ed9c0953174bc5b5cac9fd09e3a8e")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProjetoMidasAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProjetoMidasAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
