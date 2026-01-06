@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjetoMidasAPI.Data;
 
@@ -11,9 +12,11 @@ using ProjetoMidasAPI.Data;
 namespace ProjetoMidasAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260106012956_AjustesLancamento")]
+    partial class AjustesLancamento
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,58 +24,6 @@ namespace ProjetoMidasAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Emprestimo", b =>
-                {
-                    b.Property<int>("IdSimEmprestimo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdSimEmprestimo"));
-
-                    b.Property<DateTime>("Data")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DataCriacaoSE")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("IOFemprestimo")
-                        .HasColumnType("decimal(5,4)");
-
-                    b.Property<int?>("UsuarioResponsavel")
-                        .HasColumnType("int");
-
-                    b.Property<string>("descricaoEmprestimo")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<decimal>("despesasEmprestimo")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("nomeEmprestimo")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("parcelasEmprestimo")
-                        .HasColumnType("int");
-
-                    b.Property<string>("provedorEmprestimo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("tarifasEmprestimo")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("valorEmprestimo")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("valorParcelas")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("IdSimEmprestimo");
-
-                    b.ToTable("Emprestimos", (string)null);
-                });
 
             modelBuilder.Entity("Lancamento", b =>
                 {
