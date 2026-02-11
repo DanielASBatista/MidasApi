@@ -22,6 +22,56 @@ namespace ProjetoMidasAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Empresa", b =>
+                {
+                    b.Property<int>("IdEmpresa")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEmpresa"));
+
+                    b.Property<string>("cnpjEmpresa")
+                        .IsRequired()
+                        .HasMaxLength(14)
+                        .HasColumnType("nvarchar(14)");
+
+                    b.Property<string>("emailEmpresa")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("idResponsavel")
+                        .HasColumnType("int");
+
+                    b.Property<string>("nomeFantasia")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("razaoSocial")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("telefoneEmp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdEmpresa");
+
+                    b.ToTable("Empresas", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            IdEmpresa = 1,
+                            cnpjEmpresa = "12345678901234",
+                            emailEmpresa = "empresa@teste.com",
+                            idResponsavel = 1,
+                            nomeFantasia = "Teste",
+                            razaoSocial = "Empresa Teste",
+                            telefoneEmp = "123456789"
+                        });
+                });
+
             modelBuilder.Entity("Emprestimo", b =>
                 {
                     b.Property<int>("IdSimEmprestimo")
@@ -96,14 +146,17 @@ namespace ProjetoMidasAPI.Migrations
                     b.Property<int?>("IdProjecao")
                         .HasColumnType("int");
 
+                    b.Property<int?>("IdSimEmprestimo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("int");
+
                     b.Property<string>("ObservacaoLancamento")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<int?>("TipoLancamento")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UsuarioResponsavel")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Valor")
@@ -113,6 +166,8 @@ namespace ProjetoMidasAPI.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("IdLancamento");
+
+                    b.HasIndex("IdUsuario");
 
                     b.ToTable("Lancamentos", (string)null);
                 });
@@ -145,6 +200,227 @@ namespace ProjetoMidasAPI.Migrations
                     b.HasKey("IdProjecao");
 
                     b.ToTable("Projecoes", (string)null);
+                });
+
+            modelBuilder.Entity("Recorrencia", b =>
+                {
+                    b.Property<int>("idRecorrente")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("idRecorrente"));
+
+                    b.Property<int?>("IdProjecao")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TipoLancamento")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TipoRecorrenciaId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UsuarioResponsavel")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("dataInicio")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("dsRecorrente")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("momentoCriacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("obRecorrente")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int?>("qtdeRecorrente")
+                        .HasColumnType("int");
+
+                    b.HasKey("idRecorrente");
+
+                    b.HasIndex("TipoRecorrenciaId");
+
+                    b.ToTable("Recorrencias", (string)null);
+                });
+
+            modelBuilder.Entity("Responsavel", b =>
+                {
+                    b.Property<int>("IdResponsavel")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdResponsavel"));
+
+                    b.Property<string>("emailResponsavel")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("nomeResponsavel")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("sobrenomeResponsavel")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("telefoneResponsavel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdResponsavel");
+
+                    b.ToTable("Responsaveis", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            IdResponsavel = 1,
+                            emailResponsavel = "joao.silva@teste.com",
+                            nomeResponsavel = "João",
+                            sobrenomeResponsavel = "Silva",
+                            telefoneResponsavel = "987654321"
+                        });
+                });
+
+            modelBuilder.Entity("TipoRecorrencia", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("PadraoSistema")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TipoRecorrencias", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Nome = "Mensal",
+                            PadraoSistema = true
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Nome = "Semanal",
+                            PadraoSistema = true
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Nome = "Anual",
+                            PadraoSistema = true
+                        });
+                });
+
+            modelBuilder.Entity("Usuario", b =>
+                {
+                    b.Property<int>("IdUsuario")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUsuario"));
+
+                    b.Property<int>("IdEmpresa")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("PasswordHash")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Perfil")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Visitante");
+
+                    b.Property<int>("TipoUsuario")
+                        .HasColumnType("int");
+
+                    b.Property<string>("emailUsuario")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("nomeUsuario")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("sobrenome")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("telefone")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.HasKey("IdUsuario");
+
+                    b.ToTable("Usuarios", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            IdUsuario = 1,
+                            IdEmpresa = 0,
+                            PasswordHash = new byte[] { 234, 209, 144, 129, 65, 154, 210, 28, 207, 122, 165, 110, 20, 143, 105, 93, 11, 2, 59, 210, 27, 230, 59, 61, 49, 220, 77, 206, 58, 26, 123, 196, 226, 112, 54, 233, 72, 117, 250, 216, 202, 183, 100, 182, 239, 223, 134, 27, 224, 61, 174, 62, 47, 225, 177, 28, 26, 31, 200, 61, 67, 28, 101, 237 },
+                            PasswordSalt = new byte[] { 142, 247, 56, 176, 133, 89, 209, 125, 205, 83, 66, 151, 237, 176, 224, 100, 169, 50, 250, 5, 66, 201, 148, 194, 154, 98, 210, 145, 113, 180, 191, 239, 228, 195, 161, 2, 150, 238, 121, 80, 21, 195, 246, 217, 6, 221, 136, 50, 8, 174, 187, 9, 43, 108, 247, 167, 218, 93, 189, 209, 61, 214, 25, 225, 237, 119, 60, 7, 27, 11, 197, 95, 236, 23, 211, 244, 28, 214, 145, 89, 230, 79, 93, 101, 143, 103, 60, 53, 244, 120, 229, 218, 169, 131, 175, 159, 112, 135, 14, 126, 255, 49, 178, 108, 146, 104, 91, 29, 107, 176, 88, 14, 253, 12, 217, 61, 126, 69, 184, 30, 84, 234, 174, 41, 6, 253, 130, 5 },
+                            Perfil = "Administrador",
+                            TipoUsuario = 7,
+                            emailUsuario = "",
+                            nomeUsuario = "Admin",
+                            sobrenome = "",
+                            telefone = ""
+                        });
+                });
+
+            modelBuilder.Entity("Lancamento", b =>
+                {
+                    b.HasOne("Usuario", "Usuario")
+                        .WithMany("Lancamentos")
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Recorrencia", b =>
+                {
+                    b.HasOne("TipoRecorrencia", "TipoRecorrencia")
+                        .WithMany()
+                        .HasForeignKey("TipoRecorrenciaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TipoRecorrencia");
+                });
+
+            modelBuilder.Entity("Usuario", b =>
+                {
+                    b.Navigation("Lancamentos");
                 });
 #pragma warning restore 612, 618
         }

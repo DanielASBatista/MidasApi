@@ -1,10 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoMidasAPI.Data;
-using ProjetoMidasAPI.Models;
+using System.Security.Claims;
 
 namespace ProjetoMidasAPI.Controllers
 {
+   // [Authorize]
     [ApiController]
     [Route("[controller]")] // Define a rota sem precisar colocar API: /Lancamentos
     public class LancamentosController : ControllerBase
@@ -16,9 +18,15 @@ namespace ProjetoMidasAPI.Controllers
 
         // READ - Lista todos os lançamentos
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<Lancamento>>> GetAll() =>
-            await _context.Lancamentos.ToListAsync();
+        public async Task<ActionResult<IEnumerable<Lancamento>>> GetAll()
+        {
+            var idUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
+            return await _context.Lancamentos
+                .Where(l => l.IdUsuario == idUsuario)
+                .ToListAsync();
+        }
+        
         // READ - Busca por ID
         [HttpGet("{id}")]
         public async Task<ActionResult<Lancamento>> GetById(int id)
@@ -31,9 +39,14 @@ namespace ProjetoMidasAPI.Controllers
         [HttpPost("New")]
         public async Task<ActionResult<Lancamento>> Post(Lancamento lancamento)
         {
-            lancamento.DataCriacao = DateTime.UtcNow; // Define data/hora atual
+
+           var idUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+           lancamento.IdUsuario = idUsuario;
+           lancamento.DataCriacao = DateTime.UtcNow; // Define data/hora atual
+            
             _context.Lancamentos.Add(lancamento); // Adiciona ao lançamento
             await _context.SaveChangesAsync(); // Salva no banco
+            
             return CreatedAtAction(nameof(GetById), new { id = lancamento.IdLancamento }, lancamento); // Retorna 201
         }
 

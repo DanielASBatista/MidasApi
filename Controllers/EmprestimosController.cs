@@ -31,7 +31,7 @@ namespace ProjetoMidasAPI.Controllers
             return emprestimo;
         }
         // Cria uma nova simulação
-        [HttpPost]
+        [HttpPost("New")]
         public async Task<ActionResult<Emprestimo>> Create(Emprestimo emprestimo)
         {
             // Calcula valores da simulação

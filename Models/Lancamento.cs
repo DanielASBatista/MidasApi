@@ -1,13 +1,20 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ProjetoMidasAPI_Final.Models.Enuns;
+using System.Text.Json.Serialization;
 
 public class Lancamento
 {
     [Key] // Define a chave primária da tabela
     public int IdLancamento { get; set; }
 
+    [JsonIgnore]
+    public Usuario? Usuario { get; set; }
+    public int IdUsuario { get; set; }
+    
     public int? IdProjecao { get; set; } // Identificação de projeção. Se for preenchida significa que o lançamento é uma projeção confirmada no sistema
+
+    public int? IdSimEmprestimo { get; set; } // Identificação de simulação de empréstimo. Se for preenchida significa que o lançamento é uma simulação de empréstimo confirmada no sistema
 
     public int? idRecorrente { get; set; } // Identificação de recorrência. Se for preenchida significa que o lançamento é oriundo de recorrência programada pelo usuário
 
@@ -24,7 +31,5 @@ public class Lancamento
 
     public DateTime Data { get; set; } = DateTime.UtcNow; // Data do lançamento, campo de busca e será inserido manual
 
-    public DateTime DataCriacao { get; set; } = DateTime.UtcNow; // Data/hora de criação, campo de busca e será inserido automaticamente a do sistema
-
-    public int? UsuarioResponsavel { get; set; }
+    public DateTime DataCriacao { get; set; } = DateTime.UtcNow; // Data/hora de criação, campo de busca e será inserido automaticamente a do sistema 
 }
