@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
 
 namespace ProjetoMidasAPI.Models
 {
@@ -7,6 +9,11 @@ namespace ProjetoMidasAPI.Models
     {
         [Key] // Define a chave primária da tabela
         public int IdProjecao { get; set; }
+
+        [JsonIgnore]
+        public Usuario? Usuario { get; set; }
+
+        public int IdUsuario { get; set; } // Chave estrangeira para o usuário responsável pela projeção
 
         [Required, MaxLength(200)] // Campo obrigatório, máximo 200 caracteres
         public string Titulo { get; set; } = string.Empty;

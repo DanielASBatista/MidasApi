@@ -1,3 +1,4 @@
+using ProjetoMidasAPI.Models;
 using ProjetoMidasAPI_Final.Models.Enuns;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,7 +17,10 @@ public class Usuario
     [NotMapped]
     public string PasswordString { get; set; } = string.Empty;
 
-    public List<Lancamento>? Lancamentos { get; set; } = new List<Lancamento>();
+    public List<Lancamento> Lancamentos { get; set; } = new();
+    public List<Projecao> Projecoes { get; set; } = new();
+    public List<Emprestimo> Emprestimos { get; set; } = new();
+    public List<Recorrencia> Recorrencias { get; set; } = new();
 
     [Required] // Id da empresa associada ao usuário. Campo obrigatório.
     public int IdEmpresa { get; set; } 

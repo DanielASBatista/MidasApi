@@ -1,11 +1,17 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using ProjetoMidasAPI_Final.Models.Enuns;
 
 public class Recorrencia
 {
     [Key] // Define a chave primária da tabela
     public int idRecorrente { get; set; }
+
+    [JsonIgnore]
+    public Usuario? Usuario { get; set; }
+
+    public int IdUsuario { get; set; } // Chave estrangeira para o usuário responsável pela recorrência
 
     public int? IdProjecao { get; set; } // Identificação de projeção. Se for preenchida significa que a recorrencia é uma projeção confirmada no sistema
 

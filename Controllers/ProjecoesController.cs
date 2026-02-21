@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoMidasAPI.Data;
@@ -5,6 +6,8 @@ using ProjetoMidasAPI.Models;
 
 namespace ProjetoMidasAPI.Controllers
 {
+    
+    [Authorize]
     [ApiController]
     [Route("[controller]")] // Rota: /Projecoes
     public class ProjecoesController : ControllerBase

@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;    
 using ProjetoMidasAPI.Data;
 
 namespace ProjetoMidasAPI_Final.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")] // Define a rota sem precisar colocar API: /Recorrencia
     public class RecorrenciaController : ControllerBase

@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace ProjetoMidasAPI.Controllers
 {
-   // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("[controller]")] // Define a rota sem precisar colocar API: /Lancamentos
     public class LancamentosController : ControllerBase
@@ -41,6 +41,8 @@ namespace ProjetoMidasAPI.Controllers
         {
 
            var idUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+           
+           
            lancamento.IdUsuario = idUsuario;
            lancamento.DataCriacao = DateTime.UtcNow; // Define data/hora atual
             

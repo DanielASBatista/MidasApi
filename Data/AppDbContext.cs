@@ -54,6 +54,24 @@ namespace ProjetoMidasAPI.Data
                 .WithOne(l => l.Usuario)
                 .HasForeignKey(l => l.IdUsuario)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Usuario>()
+                .HasMany(u => u.Projecoes)
+                .WithOne(p => p.Usuario)
+                .HasForeignKey(p => p.IdUsuario)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Usuario>()
+                .HasMany(u => u.Emprestimos)
+                .WithOne(e => e.Usuario)
+                .HasForeignKey(e => e.IdUsuario)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            modelBuilder.Entity<Usuario>()
+                .HasMany(u => u.Recorrencias)
+                .WithOne(r => r.Usuario)
+                .HasForeignKey(r => r.IdUsuario)
+                .OnDelete(DeleteBehavior.Restrict);
             
             base.OnModelCreating(modelBuilder);
 

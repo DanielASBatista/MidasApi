@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoMidasAPI.Data;
+using System.Security.Claims;
 
 namespace ProjetoMidasAPI.Controllers
 {
 
+    [Authorize]
     [ApiController]
     [Route("[controller]")] // Define a rota Emprestimos
     public class EmprestimosController : ControllerBase
@@ -32,20 +35,22 @@ namespace ProjetoMidasAPI.Controllers
         }
         // Cria uma nova simulação
         [HttpPost("New")]
-        public async Task<ActionResult<Emprestimo>> Create(Emprestimo emprestimo)
+        public async Task<ActionResult<Emprestimo>> Post(Emprestimo emprestimo)
         {
-            // Calcula valores da simulação
+            var idUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            emprestimo.IdUsuario = idUsuario;
+            emprestimo.DataCriacaoSE = DateTime.UtcNow;
+
+            // Calcula valores
             emprestimo.CalcularValores();
 
             _context.Emprestimos.Add(emprestimo);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(
-                nameof(GetById),
-                new { id = emprestimo.IdSimEmprestimo },
-                emprestimo
-            );
+            return CreatedAtAction(nameof(GetById), new { id = emprestimo.IdSimEmprestimo }, emprestimo);
         }
+
         // Edita uma simulação existente
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Emprestimo emprestimoAtualizado)
