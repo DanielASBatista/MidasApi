@@ -28,7 +28,7 @@ namespace ProjetoMidasAPI.Data
             // Define nomes de tabelas para serem alimentadas e chamadas. Também defini o relacionamentos e pk e fk
             modelBuilder.Entity<Projecao>().ToTable("Projecoes");
             modelBuilder.Entity<Projecao>().HasKey(p => p.IdProjecao);
-
+            
             modelBuilder.Entity<Lancamento>().ToTable("Lancamentos");
             modelBuilder.Entity<Lancamento>().HasKey(l => l.IdLancamento);
             
