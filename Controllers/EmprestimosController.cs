@@ -17,16 +17,24 @@ namespace ProjetoMidasAPI.Controllers
         //Construtor
         public EmprestimosController(AppDbContext context) => _context = context;
 
+        private int UserId =>
+            int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        private IQueryable<Emprestimo> QueryUsuario()
+        {
+            return _context.Emprestimos
+                .Where(e => e.IdUsuario == UserId);
+        }
 
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<Emprestimo>>> GetAll() =>
-            await _context.Emprestimos.ToListAsync();
+            await QueryUsuario().ToListAsync();
 
         // Retorna uma simulação específica
         [HttpGet("{id}")]
         public async Task<ActionResult<Emprestimo>> GetById(int id)
         {
-            var emprestimo = await _context.Emprestimos.FindAsync(id);
+            var emprestimo = await QueryUsuario().FirstOrDefaultAsync(e => e.IdSimEmprestimo == id);
 
             if (emprestimo == null)
                 return NotFound();
@@ -37,9 +45,8 @@ namespace ProjetoMidasAPI.Controllers
         [HttpPost("New")]
         public async Task<ActionResult<Emprestimo>> Post(Emprestimo emprestimo)
         {
-            var idUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-            emprestimo.IdUsuario = idUsuario;
+            
+            emprestimo.IdUsuario = UserId;
             emprestimo.DataCriacaoSE = DateTime.UtcNow;
 
             // Calcula valores
@@ -55,14 +62,14 @@ namespace ProjetoMidasAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Emprestimo emprestimoAtualizado)
         {
-            if (id != emprestimoAtualizado.IdSimEmprestimo)
+            if (emprestimoAtualizado == null)
                 return BadRequest();
 
-            var emprestimo = await _context.Emprestimos.FindAsync(id);
+            var emprestimo = await QueryUsuario().FirstOrDefaultAsync(e => e.IdSimEmprestimo == id);
+            
             if (emprestimo == null)
                 return NotFound();
 
-            // Atualiza campos editáveis
             emprestimo.nomeEmprestimo = emprestimoAtualizado.nomeEmprestimo;
             emprestimo.descricaoEmprestimo = emprestimoAtualizado.descricaoEmprestimo;
             emprestimo.provedorEmprestimo = emprestimoAtualizado.provedorEmprestimo;
@@ -73,7 +80,6 @@ namespace ProjetoMidasAPI.Controllers
             emprestimo.tarifasEmprestimo = emprestimoAtualizado.tarifasEmprestimo;
             emprestimo.Data = emprestimoAtualizado.Data;
 
-            // Recalcula a simulação
             emprestimo.CalcularValores();
 
             await _context.SaveChangesAsync();
@@ -83,9 +89,8 @@ namespace ProjetoMidasAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var emprestimo = await _context.Emprestimos.FindAsync(id);
-            if (emprestimo == null)
-                return NotFound();
+            var emprestimo = await QueryUsuario().FirstOrDefaultAsync(e => e.IdSimEmprestimo == id);
+            if (emprestimo == null) return NotFound();
 
             _context.Emprestimos.Remove(emprestimo);
             await _context.SaveChangesAsync();

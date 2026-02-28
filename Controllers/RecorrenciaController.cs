@@ -1,7 +1,9 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;    
 using ProjetoMidasAPI.Data;
+using ProjetoMidasAPI.Models;
 
 namespace ProjetoMidasAPI_Final.Controllers
 {
@@ -15,10 +17,19 @@ namespace ProjetoMidasAPI_Final.Controllers
         // Construtor
         public RecorrenciaController(AppDbContext context) => _context = context;
 
+        private int UserId =>
+            int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        private IQueryable<Recorrencia> QueryUsuario()
+        {
+            return _context.Recorrencias
+                .Where(r => r.IdUsuario == UserId);
+        }
+        
         // READ - Lista todas as recorrências
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<Recorrencia>>> GetAll() =>
-            await _context.Recorrencias
+            await QueryUsuario()
             .Include(r => r.TipoRecorrencia)
             .ToListAsync();
 
@@ -26,7 +37,7 @@ namespace ProjetoMidasAPI_Final.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Recorrencia>> GetById(int id)
         {
-            var recorrencia = await _context.Recorrencias
+            var recorrencia = await QueryUsuario()
             .Include(r => r.TipoRecorrencia)
             .FirstOrDefaultAsync(r => r.idRecorrente == id);
         
@@ -40,18 +51,27 @@ namespace ProjetoMidasAPI_Final.Controllers
         [HttpPost("New")]
         public async Task<ActionResult<Recorrencia>> Post(Recorrencia recorrencia)
         {
-            recorrencia.momentoCriacao = DateTime.UtcNow; // Define data/hora atual
-            _context.Recorrencias.Add(recorrencia); // Adiciona a recorrência
-            await _context.SaveChangesAsync(); // Salva no banco
-            return CreatedAtAction(nameof(GetById), new { id = recorrencia.idRecorrente }, recorrencia); // Retorna 201
+            recorrencia.IdUsuario = UserId; 
+            recorrencia.momentoCriacao = DateTime.UtcNow; 
+            
+            _context.Recorrencias.Add(recorrencia); 
+            
+            await _context.SaveChangesAsync(); 
+            
+            return CreatedAtAction(nameof(GetById), new { id = recorrencia.idRecorrente }, recorrencia); 
         }
 
         // UPDATE - Atualiza recorrência existente
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, Recorrencia recorrencia)
         {
-            if (id != recorrencia.idRecorrente) return BadRequest();
-            _context.Entry(recorrencia).State = EntityState.Modified;
+            var existente = await QueryUsuario().FirstOrDefaultAsync(r => r.idRecorrente == id);
+            
+            if (existente == null) return NotFound();
+
+            existente.Valor = recorrencia.Valor;
+            existente.TipoRecorrenciaId = recorrencia.TipoRecorrenciaId;
+
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -60,11 +80,34 @@ namespace ProjetoMidasAPI_Final.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var recorrencia = await _context.Recorrencias.FindAsync(id);
-            if (recorrencia == null) return NotFound();
-            _context.Recorrencias.Remove(recorrencia);
+            var existente = await QueryUsuario().FirstOrDefaultAsync(r => r.idRecorrente == id);
+            
+            if (existente == null) return NotFound();
+
+            _context.Recorrencias.Remove(existente);
             await _context.SaveChangesAsync();
-            return NoContent();
+            return NoContent();   
+        }
+        [HttpGet("Data/{data}")]
+        public async Task<ActionResult<IEnumerable<Recorrencia>>> GetByData(DateTime data)
+        {
+            return await QueryUsuario()
+                .Where(r => r.momentoCriacao.Date == data.Date)
+                .ToListAsync();
+        }
+        [HttpGet("Tipo/{tipoId}")]
+        public async Task<ActionResult<IEnumerable<Recorrencia>>> GetByTipo(int tipoId)
+        {
+            return await QueryUsuario()
+                .Where(r => r.TipoRecorrenciaId == tipoId)
+                .ToListAsync();
+        }
+        [HttpGet("Valor/{valor}")]
+        public async Task<ActionResult<IEnumerable<Recorrencia>>> GetByValor(decimal valor)
+        {
+            return await QueryUsuario()
+                .Where(r => r.Valor == valor)
+                .ToListAsync();
         }
     }
 }

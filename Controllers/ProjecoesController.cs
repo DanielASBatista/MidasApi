@@ -14,10 +14,7 @@ namespace ProjetoMidasAPI.Controllers
     {
         private readonly AppDbContext _context;
 
-        public ProjecoesController(AppDbContext context)
-        {
-            _context = context;
-        }
+        public ProjecoesController(AppDbContext context) => _context = context;
 
         private int UserId =>
             int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -28,9 +25,6 @@ namespace ProjetoMidasAPI.Controllers
                 .Where(p => p.IdUsuario == UserId);
         }
 
-        // =========================
-        // GET ALL
-        // =========================
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<Projecao>>> GetAll()
         {
@@ -75,14 +69,12 @@ namespace ProjetoMidasAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, Projecao projecao)
         {
-            if (id != projecao.IdProjecao)
-                return BadRequest();
+            if (id != projecao.IdProjecao) return BadRequest();
 
             var existente = await QueryUsuario()
                 .FirstOrDefaultAsync(p => p.IdProjecao == id);
 
-            if (existente == null)
-                return NotFound();
+            if (existente == null) return NotFound();
 
             existente.ValorPrevisto = projecao.ValorPrevisto;
             existente.DataReferencia = projecao.DataReferencia;
