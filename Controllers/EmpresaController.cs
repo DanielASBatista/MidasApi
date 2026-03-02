@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoMidasAPI.Data;
@@ -14,21 +15,30 @@ namespace ProjetoMidasAPI.Controllers
         //Construtor
         public EmpresaController(AppDbContext context) => _context = context;
 
+        private int UserId =>
+            int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        private IQueryable<Empresa> QueryUsuario()
+        {
+            return _context.Empresas
+                .Where(e => e.idResponsavel == UserId);
+        }
+        
         // Retorna todas as empresas
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<Empresa>>> GetAll() =>
-            await _context.Empresas.ToListAsync();
+            await QueryUsuario().ToListAsync();
 
         // Retorna uma empresa específica
         [HttpGet("{id}")]
         public async Task<ActionResult<Empresa>> GetById(int id)
         {
-            var Empresa = await _context.Empresas.FindAsync(id);
-
-            if (Empresa == null)
+            var empresa = await QueryUsuario().FirstOrDefaultAsync(e => e.IdEmpresa == id);
+    
+            if (empresa == null)
                 return NotFound();
 
-            return Empresa;
+            return empresa;
         }
         // Cria uma nova empresa
         [HttpPost("New")]
@@ -64,7 +74,7 @@ namespace ProjetoMidasAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var Empresa = await _context.Empresas.FindAsync(id);
+            var Empresa = await QueryUsuario().FirstOrDefaultAsync(e => e.IdEmpresa == id);
             if (Empresa == null)
                 return NotFound();
 

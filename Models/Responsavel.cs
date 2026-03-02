@@ -1,6 +1,12 @@
+//A questao do responsavel precisa ser tratada de uma maneira que,
+//na minha cabeça, ela vai ser herdeira da superclasse usuário.
+//Um usuário cria uma empresa, cadastra responsaveis que 
+//não são nada além de usuários com ocupações especificas.
+//Isso claramente não tem uso prático, mas é uma maneira de demonstrar
+//o conceito de herança e poliformismo.
 using System.ComponentModel.DataAnnotations;
 
-public class Responsavel
+public class Responsavel 
 {
     [Key] // Define a chave primária da tabela
     public int IdResponsavel { get; set; }
