@@ -68,28 +68,28 @@ namespace ProjetoMidasAPI.Controllers
         {
             return Ok(new { valido = true });
         }
+        
         [AllowAnonymous]
         [HttpPost("Registrar")]
-        public async Task<IActionResult> RegistrarUsuario (Usuario usuario)
+        public async Task<IActionResult> RegistrarUsuario(RegistrarUsuarioDto dto)
         {
-            try
-            {
-                if (await UsuarioExistente(usuario.nomeUsuario))
-                throw new System.Exception("Nome de usuário já existe!");
+            if (await UsuarioExistente(dto.NomeUsuario))
+                return BadRequest("Nome de usuário já existe!");
 
-                Criptografia.CriarPasswordHash(usuario.PasswordString, out byte[] hash, out byte[] salt);
-                usuario.PasswordString = string.Empty;
-                usuario.PasswordHash = hash;
-                usuario.PasswordSalt = salt;
-                await _context.Usuarios.AddAsync(usuario);
-                await _context.SaveChangesAsync();
-
-                return Ok("Usuário registrado com sucesso!");  
-            }
-            catch (System.Exception ex)
+            Usuario usuario = new Usuario
             {
-                return BadRequest($"Erro ao registrar usuário: {ex.Message}");
-            }
+                nomeUsuario = dto.NomeUsuario
+            };
+
+            Criptografia.CriarPasswordHash(dto.PasswordString, out byte[] hash, out byte[] salt);
+
+            usuario.PasswordHash = hash;
+            usuario.PasswordSalt = salt;
+
+            await _context.Usuarios.AddAsync(usuario);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { mensagem = "Usuário registrado com sucesso!" });
         }
         [AllowAnonymous]
         [HttpPost("Autenticar")]
