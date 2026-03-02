@@ -1,70 +1,79 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-
 public class Emprestimo
 {
-    [Key] // Define a chave primária da tabela
+    [Key]
     public int IdSimEmprestimo { get; set; }
     
     [JsonIgnore]
     public Usuario? Usuario { get; set; }
 
-    public int IdUsuario { get; set; } // Chave estrangeira para o usuário responsável pela simulação de empréstimo               
+    public int IdUsuario { get; set; }              
     
     [Required, MaxLength(50)]
-    public string nomeEmprestimo { get; set; } = string.Empty; // Nome associado a projeção de empréstimo. Obrigatório por enquanto
+    public string nomeEmprestimo { get; set; } = string.Empty;
     
     [MaxLength(200)]
-    public string? descricaoEmprestimo { get; set; } // Descrição opcional do empréstimo
+    public string? descricaoEmprestimo { get; set; }
     
-    public string? provedorEmprestimo { get; set; } // Identifica o tipo de lançamento dentro das categorias pré estabelecidas
+    public string? provedorEmprestimo { get; set; }
     
     [Required] 
-    [Column(TypeName = "decimal(18,2)")]  // Define o tipo decimal no banco (18 é o número total de digitos e 2 são as casas decimais)
+    [Column(TypeName = "decimal(18,2)")]
     public decimal valorEmprestimo { get; set; }
     
     [Required] 
     public int parcelasEmprestimo { get; set;}
-    [Column(TypeName = "decimal(18,2)")] // Define o tipo decimal no banco (18 é o número total de digitos e 2 são as casas decimais)
+    
+    [Column(TypeName = "decimal(18,2)")]
     public decimal valorParcelas { get; set; }
     
-    [Required, Column(TypeName = "decimal(5,4)")] // Define o tipo decimal no banco (5 é o número total de digitos e 4 são as casas decimais)
-    public decimal IOFemprestimo { get; set; }
-    [Column(TypeName = "decimal(18,2)")]
+    [Required, Column(TypeName = "decimal(5,4)")]
+    public decimal IOFemprestimo { get; set; }   // taxa base, ex: 0.0038
     
+    [Column(TypeName = "decimal(18,2)")]
     public decimal despesasEmprestimo { get; set;}
+    
     [Column(TypeName = "decimal(18,2)")]
     public decimal tarifasEmprestimo { get; set;}
-    //Esses dois atributos abaixo são data de criação a ser inserida pelo usuário e data de inserção do dado no banco de dados.
-    //Esses atributos não estão assinalados no esquema do banco de dados, junto com o usuario responsavel, mas deveriam. 
-    //Ficarão aqui e depois eu vejo se passo as informações pro usuário, o que eu deveria fazer.
-    public DateTime Data { get; set; } = DateTime.UtcNow; // Data da entrada relacionada ao emprestimo caso ele seja ativado, será inserido manual
     
-    public DateTime DataCriacaoSE { get; set; } = DateTime.UtcNow; // Data/hora de criação do dado no sistema
+    public DateTime Data { get; set; } = DateTime.UtcNow;
+    public DateTime DataCriacaoSE { get; set; } = DateTime.UtcNow;
     public int? UsuarioResponsavel { get; set; }
 
-    //Abaixo o método para calculos finais do empréstimo usando os valores passados pelo usuário
-    public void CalcularValores()
-{
-    if (parcelasEmprestimo <= 0)
-        throw new InvalidOperationException("O número de parcelas deve ser maior que zero.");
+    // Propriedade calculada para ValorTotal
+    [NotMapped]
+    public decimal ValorTotal 
+    { 
+        get
+        {
+            var valorIofCalculado = CalcularIOF();
+            return decimal.Round(
+                valorEmprestimo + valorIofCalculado + despesasEmprestimo + tarifasEmprestimo,
+                2,
+                MidpointRounding.AwayFromZero
+            );
+        }
+    }
 
-        // IOF calculado sobre o valor do empréstimo
-        var valorIofCalculado = decimal.Round(
-            valorEmprestimo * IOFemprestimo,
-            2,
-            MidpointRounding.AwayFromZero
-        );
+    // Método que calcula IOF considerando dias do empréstimo (padrão 30 dias)
+    public decimal CalcularIOF(int diasEmprestimo = 30)
+    {
+        const decimal IOF_DIARIO = 0.000082m; // 0,0082% ao dia
+        var valorIof = valorEmprestimo * (IOFemprestimo + IOF_DIARIO * diasEmprestimo);
+        return decimal.Round(valorIof, 2, MidpointRounding.AwayFromZero);
+    }
 
-        // Valor total do empréstimo
-        var valorTotal = valorEmprestimo
-                        + valorIofCalculado
-                        + despesasEmprestimo
-                        + tarifasEmprestimo;
+    // Método para calcular valor da parcela e arredondar
+    public void CalcularValores(int diasEmprestimo = 30)
+    {
+        if (parcelasEmprestimo <= 0)
+            throw new InvalidOperationException("O número de parcelas deve ser maior que zero.");
 
-        // Valor de cada parcela
+        var valorTotal = ValorTotal;
         valorParcelas = decimal.Round(
             valorTotal / parcelasEmprestimo,
             2,

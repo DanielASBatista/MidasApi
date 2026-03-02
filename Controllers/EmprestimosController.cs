@@ -97,5 +97,6 @@ namespace ProjetoMidasAPI.Controllers
 
             return NoContent();
         }
+        //É interessante considerar a adição de filtros para os empréstimos.
     }
 }
