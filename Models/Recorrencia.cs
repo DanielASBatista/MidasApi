@@ -17,9 +17,10 @@ public class Recorrencia
 
     public TipoLancamentoEnum? TipoLancamento { get; set; } // Identifica o tipo de lançamento dentro das categorias pré estabelecidas
 
-    public int TipoRecorrenciaId { get; set; } // Identifica o tipo de recorrência (diária, semanal, mensal, anual, etc)
+    public int IdTipoRecorrencia { get; set; } // Identifica o tipo de recorrência (diária, semanal, mensal, anual, etc)
 
     public TipoRecorrencia? TipoRecorrencia { get; set; } // Identifica o tipo de recorrência (diária, semanal, mensal, anual, etc)
+    
     [MaxLength(50)] // Descrição da recorrencia. Daqui vai ser extraída a informação a respeito da repetição impplicita na recorrencia. Campo opcional por enquanto mas que obviamente vai ser obrigatório.
     public string? dsRecorrente { get; set; }
 
