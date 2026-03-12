@@ -65,7 +65,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors("AllowReactApp");
+app.UseCors("AllowVercelApp");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
