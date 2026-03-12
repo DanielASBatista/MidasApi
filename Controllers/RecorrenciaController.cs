@@ -70,7 +70,7 @@ namespace ProjetoMidasAPI_Final.Controllers
             if (existente == null) return NotFound();
 
             existente.Valor = recorrencia.Valor;
-            existente.TipoRecorrenciaId = recorrencia.TipoRecorrenciaId;
+            existente.IdTipoRecorrencia = recorrencia.IdTipoRecorrencia;
 
             await _context.SaveChangesAsync();
             return NoContent();
@@ -99,7 +99,7 @@ namespace ProjetoMidasAPI_Final.Controllers
         public async Task<ActionResult<IEnumerable<Recorrencia>>> GetByTipo(int tipoId)
         {
             return await QueryUsuario()
-                .Where(r => r.TipoRecorrenciaId == tipoId)
+                .Where(r => r.IdTipoRecorrencia == tipoId)
                 .ToListAsync();
         }
         [HttpGet("Valor/{valor}")]
