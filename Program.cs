@@ -39,14 +39,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowVercelApp",
+    options.AddPolicy("AllowAll",
         policy =>
         {
             policy
-                .WithOrigins("*")
+                .AllowAnyOrigin()
+                //.WithOrigins("*")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
-              //  .AllowCredentials();
+             //   .AllowCredentials();
         });
 });
 
@@ -65,9 +66,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors("AllowVercelApp");
+app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
