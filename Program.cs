@@ -43,10 +43,10 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy
-                .WithOrigins("https://midasfinances.vercel.app")
+                .WithOrigins("*")
                 .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
+                .AllowAnyMethod();
+              //  .AllowCredentials();
         });
 });
 
